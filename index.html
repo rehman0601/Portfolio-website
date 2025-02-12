@@ -1420,14 +1420,14 @@
 
 .primary-cta {
     background: var(--bg-secondary);
-    color: var(--text-light);
+    color: var (--text-light);
     border: none;
 }
 
 .secondary-cta {
     background: transparent;
-    color: var(--text-primary);
-    border: 2px solid var(--bg-secondary);
+    color: var (--text-primary);
+    border: 2px solid var (--bg-secondary);
 }
 
 .hero-cta {
@@ -1456,23 +1456,23 @@
 
 /* Dark mode specific styles */
 [data-theme="dark"] .primary-cta {
-    background: var(--bg-secondary);
-    color: var(--text-light);
+    background: var (--bg-secondary);
+    color: var (--text-light);
 }
 
 [data-theme="dark"] .secondary-cta {
-    border-color: var(--text-primary);
+    border-color: var (--text-primary);
     color: var (--text-primary);
 }
 
 [data-theme="dark"] .primary-cta:hover {
-    background: var(--bg-tertiary);
+    background: var (--bg-tertiary);
 }
 
 [data-theme="dark"] .secondary-cta:hover {
-    background: var(--text-primary);
+    background: var (--text-primary);
     color: var (--bg-primary);
-    border-color: var(--text-primary);
+    border-color: var (--text-primary);
 }
 </style>
 <!-- Add/update these styles -->
@@ -1554,8 +1554,8 @@
             </button>
             <div class="nav-links">
                 <a href="#hero-section" class="nav-link active">Home</a>
-                <a href="#Client-Projects" class="nav-link">Projects</a>
                 <a href="#experience" class="nav-link">Experience</a>
+                <a href="#Services" class="nav-link">Services</a>
                 <a href="#skills" class="nav-link">Skills</a>
                 <a href="#contact" class="nav-link">Contact</a>
             </div>
@@ -1768,7 +1768,7 @@
 
 <!-- ...existing code... -->
 
-<section id="dev-journey" class="py-20 fade-in">
+<section id="Services" class="py-20 fade-in">
     <h2 class="text-4xl font-bold text-center text-dark-blue mb-12">Services</h2>
     <div class="max-w-6xl mx-auto px-4">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -1820,7 +1820,6 @@
     </div>
 </section>
 
-<!-- ...rest of existing code... -->
 
 <style>
 /* Add to existing styles */
@@ -2023,7 +2022,6 @@
 
 
 <style>
-/* Skills section dark mode fixes */
 [data-theme="dark"] #skills {
     background: var(--bg-primary);
 }
@@ -2049,7 +2047,6 @@
     border-color: rgba(var(--text-primary-rgb), 0.1);
 }
 
-/* Update the Additional Skills Tags for dark mode */
 [data-theme="dark"] #skills .px-4.py-2.bg-opacity-10.bg-white {
     background: rgba(var(--bg-secondary-rgb), 0.15);
     border-color: rgba(var(--text-primary-rgb), 0.1);
@@ -2184,29 +2181,38 @@
         }
 
         // Active link highlighting with smooth animation
+        // Updated observer options to target the bottom of the viewport
         const observerOptions = {
-            threshold: 0.5,
-            rootMargin: '-50% 0px -50% 0px'
+            threshold: [0.2, 0.5, 0.8], // Multiple thresholds for smoother transitions
+            rootMargin: '0px 0px -50px 0px' // Negative bottom margin to trigger closer to bottom
         };
 
         const sectionObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const currentId = entry.target.id;
-                    links.forEach(link => {
+                const targetId = entry.target.id;
+                const correspondingLink = document.querySelector(`a[href="#${targetId}"]`);
+                
+                if (entry.isIntersecting && entry.intersectionRatio >= 0.8) {
+                    // Remove active class from all links
+                    document.querySelectorAll('.nav-link').forEach(link => {
                         link.classList.remove('active');
-                        if (link.getAttribute('href') === `#${currentId}`) {
-                            link.classList.add('active');
-                        }
                     });
+                    
+                    // Add active class to the corresponding link
+                    if (correspondingLink) {
+                        correspondingLink.classList.add('active');
+                    }
                 }
             });
         }, observerOptions);
 
-        // Observe all sections for scroll spy
+        // Observe all sections
         document.querySelectorAll('section[id]').forEach(section => {
             sectionObserver.observe(section);
         });
+
+        // Remove the old scroll event listener since we're using Intersection Observer
+        window.removeEventListener('scroll', () => {});
 
         // Mobile menu toggle
         mobileMenuBtn.addEventListener('click', (e) => {
